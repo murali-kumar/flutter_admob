@@ -14,6 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     adMobService.createInterstitialAd();
+    adMobService.createRewardedAd();
   }
 
   @override
@@ -56,7 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ElevatedButton(
               child: const Text('Rewarded Ad'),
-              onPressed: () {},
+              onPressed: () {
+                adMobService.showRewardedAd();
+              },
             ),
           ],
         ),

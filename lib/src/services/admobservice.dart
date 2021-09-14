@@ -5,6 +5,7 @@ class AdMobService {
   BannerAd? topBannerAd;
   BannerAd? largeBannerAd;
   InterstitialAd? interstitialAd;
+  RewardedAd? rewardedAd;
 
   void createTopBannerAd() {
     topBannerAd = BannerAd(
@@ -13,16 +14,16 @@ class AdMobService {
         request: const AdRequest(),
         listener: BannerAdListener(
           onAdLoaded: (Ad ad) {
-            print('onAdLoaded');
+            //print('onAdLoaded');
           },
           onAdFailedToLoad: (Ad ad, LoadAdError error) {
-            print('onAdFailedToLoad  + $error');
+            //print('onAdFailedToLoad  + $error');
           },
           onAdOpened: (Ad ad) {
-            print('onAdOpened');
+            //print('onAdOpened');
           },
           onAdClosed: (Ad ad) {
-            print('onAdClosed');
+            //print('onAdClosed');
             ad.dispose();
             createTopBannerAd();
           },
@@ -37,16 +38,16 @@ class AdMobService {
         request: const AdRequest(),
         listener: BannerAdListener(
           onAdLoaded: (Ad ad) {
-            print('onAdLoaded');
+            //print('onAdLoaded');
           },
           onAdFailedToLoad: (Ad ad, LoadAdError error) {
-            print('onAdFailedToLoad  + $error');
+            //print('onAdFailedToLoad  + $error');
           },
           onAdOpened: (Ad ad) {
-            print('onAdOpened');
+            //print('onAdOpened');
           },
           onAdClosed: (Ad ad) {
-            print('onAdClosed');
+            //print('onAdClosed');
             ad.dispose();
             createTopBannerAd();
           },
@@ -64,7 +65,7 @@ class AdMobService {
             interstitialAd = ad;
           },
           onAdFailedToLoad: (LoadAdError error) {
-            print('InterstitialAd failed to load: $error');
+            //print('InterstitialAd failed to load: $error');
           },
         ));
   }
@@ -76,25 +77,75 @@ class AdMobService {
 
     interstitialAd?.fullScreenContentCallback = FullScreenContentCallback(
       onAdShowedFullScreenContent: (InterstitialAd ad) {
-        print('$ad onAdShowedFullScreenContent.');
+        //print('$ad onAdShowedFullScreenContent.');
       },
       onAdDismissedFullScreenContent: (InterstitialAd ad) {
-        print('$ad onAdDismissedFullScreenContent.');
+        //print('$ad onAdDismissedFullScreenContent.');
         ad.dispose();
         createInterstitialAd();
       },
       onAdFailedToShowFullScreenContent: (InterstitialAd ad, AdError error) {
-        print('$ad onAdFailedToShowFullScreenContent: $error');
+        //print('$ad onAdFailedToShowFullScreenContent: $error');
         ad.dispose();
         createInterstitialAd();
       },
       onAdImpression: (InterstitialAd ad) {
-        print('$ad impression occurred.');
+        //print('$ad impression occurred.');
       },
     );
 
     interstitialAd?.show();
     interstitialAd = null;
+  }
+
+  void createRewardedAd() {
+    RewardedAd.load(
+        adUnitId: RewardedAd.testAdUnitId,
+        request: const AdRequest(),
+        rewardedAdLoadCallback: RewardedAdLoadCallback(
+          onAdLoaded: (RewardedAd ad) {
+            //print('$ad loaded.');
+            // Keep a reference to the ad so you can show it later.
+            rewardedAd = ad;
+          },
+          onAdFailedToLoad: (LoadAdError error) {
+            //print('RewardedAd failed to load: $error');
+          },
+        ));
+  }
+
+  void showRewardedAd() {
+    if (rewardedAd == null) {
+      return;
+    }
+
+    rewardedAd?.fullScreenContentCallback = FullScreenContentCallback(
+      onAdShowedFullScreenContent: (RewardedAd ad) {
+        //print('$ad onAdShowedFullScreenContent.');
+      },
+      onAdDismissedFullScreenContent: (RewardedAd ad) {
+        //print('$ad onAdDismissedFullScreenContent.');
+        ad.dispose();
+        createRewardedAd();
+      },
+      onAdFailedToShowFullScreenContent: (RewardedAd ad, AdError error) {
+        //print('$ad onAdFailedToShowFullScreenContent: $error');
+        ad.dispose();
+        createRewardedAd();
+      },
+      onAdImpression: (RewardedAd ad) {
+        //print('$ad impression occurred.');
+      },
+    );
+
+    rewardedAd?.show(
+      onUserEarnedReward: (RewardedAd ad, RewardItem rewardItem) {
+        // Reward the user for watching an ad.
+        //print("Adds Reward is ${rewardItem.amount}");
+      },
+    );
+
+    //------
   }
 
   void dispose() {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_admob/src/screen/bannerad_screen.dart';
+import 'package:flutter_admob/src/services/admobservice.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -8,6 +10,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    adMobService.createInterstitialAd();
+  }
+
+  @override
+  void dispose() {
+    adMobService.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,14 +37,19 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             ElevatedButton(
               child: const Text('Banner Ad'),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => const BannerAdScreen()));
+              },
             ),
             const SizedBox(
               height: 10.0,
             ),
             ElevatedButton(
               child: const Text('Interstitial Ad'),
-              onPressed: () {},
+              onPressed: () {
+                adMobService.showInterstitialAd();
+              },
             ),
             const SizedBox(
               height: 10.0,

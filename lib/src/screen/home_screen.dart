@@ -49,6 +49,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ElevatedButton(
               child: const Text('Interstitial Ad'),
               onPressed: () {
+                if (adMobService.interstitialAd == null) {
+                  const snackBar = SnackBar(
+                      content:
+                          Text('Ad not loaded. Please try after some time'));
+                  showSnackBar(snackBar);
+                  return;
+                }
                 adMobService.showInterstitialAd();
               },
             ),
@@ -58,6 +65,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ElevatedButton(
               child: const Text('Rewarded Ad'),
               onPressed: () {
+                if (adMobService.rewardedAd == null) {
+                  const snackBar = SnackBar(
+                      content:
+                          Text('Ad not loaded. Please try after some time'));
+                  showSnackBar(snackBar);
+                  return;
+                }
                 adMobService.showRewardedAd();
               },
             ),
@@ -65,5 +79,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+  //------------
+
+  void showSnackBar(SnackBar snackbar) {
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 }

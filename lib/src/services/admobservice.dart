@@ -6,6 +6,10 @@ class AdMobService {
   BannerAd? largeBannerAd;
   InterstitialAd? interstitialAd;
   RewardedAd? rewardedAd;
+  final int _maxInterstitialFailedLoadAttempts = 3;
+  final int _maxRewardedFailedLoadAttempts = 3;
+  int _numInterstitialLoadAttempts = 0;
+  int _numxRewardedLoadAttempts = 0;
 
   void createTopBannerAd() {
     topBannerAd = BannerAd(
@@ -63,14 +67,22 @@ class AdMobService {
           onAdLoaded: (InterstitialAd ad) {
             // Keep a reference to the ad so you can show it later.
             interstitialAd = ad;
+            _numInterstitialLoadAttempts = 0;
           },
           onAdFailedToLoad: (LoadAdError error) {
             //print('InterstitialAd failed to load: $error');
+            _numInterstitialLoadAttempts += 1;
+            interstitialAd = null;
+            if (_numInterstitialLoadAttempts <=
+                _maxInterstitialFailedLoadAttempts) {
+              createInterstitialAd();
+            }
           },
         ));
   }
 
   void showInterstitialAd() {
+    //print(interstitialAd);
     if (interstitialAd == null) {
       return;
     }
@@ -107,9 +119,15 @@ class AdMobService {
             //print('$ad loaded.');
             // Keep a reference to the ad so you can show it later.
             rewardedAd = ad;
+            _numxRewardedLoadAttempts = 0;
           },
           onAdFailedToLoad: (LoadAdError error) {
             //print('RewardedAd failed to load: $error');
+            _numxRewardedLoadAttempts += 1;
+            rewardedAd = null;
+            if (_numxRewardedLoadAttempts <= _maxRewardedFailedLoadAttempts) {
+              createRewardedAd();
+            }
           },
         ));
   }
@@ -144,6 +162,7 @@ class AdMobService {
         //print("Adds Reward is ${rewardItem.amount}");
       },
     );
+    rewardedAd = null;
 
     //------
   }
@@ -151,6 +170,8 @@ class AdMobService {
   void dispose() {
     topBannerAd?.dispose();
     largeBannerAd?.dispose();
+    interstitialAd?.dispose();
+    rewardedAd?.dispose();
   }
   //------------
 }
